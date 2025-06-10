@@ -1,0 +1,73 @@
+{
+  "framework": {
+    "name": "RAID-X",
+    "version": "1.0.0",
+    "description": "Risk Assessment and Intelligent Detection for Cryptocurrency Transactions"
+  },
+  "infrastructure": {
+    "neptune": {
+      "instance_type": "r5.large",
+      "backup_retention_period": 7
+    },
+    "lambda": {
+      "timeout_minutes": 15,
+      "memory_sizes": {
+        "r3_engine": 512,
+        "arsm": 1024,
+        "tad_x": 2048,
+        "data_ingestion": 1024,
+        "orchestrator": 512
+      }
+    },
+    "sagemaker": {
+      "instance_type": "ml.m5.large",
+      "volume_size_gb": 30
+    }
+  },
+  "compliance_rules": {
+    "ofac_sanctions": {
+      "enabled": true,
+      "risk_weight": 1.0,
+      "description": "Check against OFAC sanctions list"
+    },
+    "high_value_threshold": {
+      "enabled": true,
+      "threshold_usd": 10000,
+      "risk_weight": 0.3,
+      "description": "Flag high-value transactions"
+    },
+    "mixer_detection": {
+      "enabled": true,
+      "risk_weight": 0.8,
+      "description": "Detect mixing service involvement"
+    },
+    "velocity_check": {
+      "enabled": true,
+      "max_transactions_per_hour": 100,
+      "risk_weight": 0.4,
+      "description": "Check transaction velocity"
+    }
+  },
+  "risk_scoring": {
+    "weights": {
+      "r3_engine": 0.3,
+      "arsm": 0.3,
+      "tad_x": 0.4
+    },
+    "thresholds": {
+      "critical": 0.8,
+      "high": 0.6,
+      "medium": 0.4,
+      "low": 0.2
+    }
+  },
+  "ml_models": {
+    "tad_x": {
+      "model_type": "lightgbm",
+      "n_estimators": 100,
+      "learning_rate": 0.1,
+      "max_depth": 10,
+      "retrain_interval_days": 7
+    }
+  }
+}
